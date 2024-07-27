@@ -1,0 +1,46 @@
+{
+    "name": "tategaki",
+    "displayName": "TateGaki",
+    "description": "a VSCode extension that enables vertical writing, primarily designed for Japanese text in .txt files",
+    "version": "0.0.1",
+    "publisher": "KentaAratani",
+    "icon": "assets/128.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CoinEZ-JPN/TakeGaki.git"
+    },
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "tategaki.openVerticalEditor",
+                "title": "Open Vertical Editor"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^4.4.3",
+        "vscode": "^1.1.37",
+        "@types/node": "^16.9.1",
+        "@types/vscode": "^1.60.0"
+    },
+    "icons": {
+        "16": "assets/16.png",
+        "32": "assets/32.png",
+        "48": "assets/48.png",
+        "128": "assets/128.png"
+    }
+}

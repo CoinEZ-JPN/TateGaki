@@ -4,16 +4,18 @@ TateGaki (縦書き) is a VSCode extension that enables vertical writing, primar
 
 ## Features
 
-- Transform selected horizontal text to vertical text (top to bottom, right to left)
-- Toggle between horizontal and vertical text
+- Opens the currently active .txt file in an embedded vertical text editor (top to bottom, right to left)
+- Syncs with the original .txt file on save
+- Automatically saves content when closing the vertical editor
 - Works exclusively with .txt files
-- Keyboard shortcut for quick transformation
 
 ## Usage
 
 1. Open a `.txt` file in VSCode.
-2. Select the text you want to transform.
-3. Use the command palette (F1 or `Ctrl+Shift+P`) and search for "Open Vertical Editor".
+2. Use the command palette (F1 or `Ctrl+Shift+P`) and search for "Open Vertical Editor".
+3. Edit your text in the vertical editor.
+4. Use Cmd+S (Mac) or Ctrl+S (Windows/Linux) to save changes.
+5. Close the vertical editor when done - changes will be automatically saved.
 
 ## Requirements
 
@@ -26,12 +28,17 @@ TateGaki (縦書き) is a VSCode extension that enables vertical writing, primar
 
 ## Release Notes
 
+### 0.0.2
+
+- Added automatic save functionality when closing the vertical editor
+- Improved sync between vertical editor and original file (BUG FIX)
+
 ### 0.0.1
 
 - Initial release of TateGaki
   - Basic vertical text transformation
-  - Toggle functionality
-  - `.txt` file restriction
+  - Sync with original .txt file
+  - .txt file restriction
 
 ## License
 

@@ -43,3 +43,9 @@ TateGaki (縦書き) is a VSCode extension that enables vertical writing, primar
 ## License
 
 This extension is licensed under the MIT License.
+
+
+## Support the Project
+
+If you find this extension helpful, consider buying me a coffee:
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/extensions)

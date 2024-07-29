@@ -2,6 +2,8 @@
 
 TateGaki (縦書き) is a VSCode extension that enables vertical writing, primarily designed for Japanese text in .txt files.
 
+![Screenshot](assets/ss.png)
+
 ## Features
 
 - Opens the currently active .txt file in an embedded vertical text editor (top to bottom, right to left)
@@ -43,7 +45,6 @@ TateGaki (縦書き) is a VSCode extension that enables vertical writing, primar
 ## License
 
 This extension is licensed under the MIT License.
-
 
 ## Support the Project
 

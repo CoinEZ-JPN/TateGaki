@@ -1,8 +1,8 @@
 {
     "name": "tategaki",
     "displayName": "TateGaki",
-    "description": "a VSCode extension that enables vertical writing, primarily designed for Japanese text in .txt files",
-    "version": "0.0.2",
+    "description": "An embedded vertical text editor, primarily for Japanese text on .txt files",
+    "version": "0.0.3",
     "publisher": "KentaAratani",
     "icon": "assets/128.png",
     "repository": {
@@ -26,24 +26,22 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install"
+        "vscode:prepublish": "npm run esbuild-base -- --minify",
+        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+        "esbuild": "npm run esbuild-base -- --sourcemap",
+        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+        "test-compile": "tsc -p ./",
+        "compile": "npm run esbuild",
+        "watch": "npm run esbuild-watch"
     },
     "devDependencies": {
         "@types/diff": "^5.2.1",
         "@types/lodash": "^4.17.7",
         "@types/mocha": "^10.0.7",
         "@types/node": "^16.9.1",
+        "esbuild": "^0.23.0",
         "typescript": "^4.4.3",
-        "vscode": "^1.1.37"
-    },
-    "icons": {
-        "16": "assets/16.png",
-        "32": "assets/32.png",
-        "48": "assets/48.png",
-        "128": "assets/128.png"
+        "@types/vscode": "^1.60.0"
     },
     "dependencies": {
         "lodash": "^4.17.21"

@@ -1,113 +1,71 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = void 0;
-const vscode = require("vscode");
-function activate(context) {
-    console.log('Tategaki extension is now active!');
-    let disposable = vscode.commands.registerCommand('tategaki.openVerticalEditor', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.languageId !== 'plaintext') {
-            vscode.window.showErrorMessage('This extension only works with .txt files');
-            return;
-        }
-        const document = editor.document;
-        let currentContent = document.getText();
-        const panel = vscode.window.createWebviewPanel('verticalEditor', `縦書き: ${document.fileName}`, vscode.ViewColumn.Beside, { enableScripts: true });
-        function updateWebview() {
-            panel.webview.html = getWebviewContent(currentContent);
-        }
-        // Initial load of the webview content
-        updateWebview();
-        // Listen for document saves to update the webview
-        const saveSubscription = vscode.workspace.onDidSaveTextDocument(savedDoc => {
-            if (savedDoc.uri.toString() === document.uri.toString()) {
-                currentContent = document.getText();
-                updateWebview();
+"use strict";var u=Object.create;var r=Object.defineProperty;var w=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var m=Object.getPrototypeOf,h=Object.prototype.hasOwnProperty;var f=(e,n)=>{for(var i in n)r(e,i,{get:n[i],enumerable:!0})},l=(e,n,i,s)=>{if(n&&typeof n=="object"||typeof n=="function")for(let o of g(n))!h.call(e,o)&&o!==i&&r(e,o,{get:()=>n[o],enumerable:!(s=w(n,o))||s.enumerable});return e};var b=(e,n,i)=>(i=e!=null?u(m(e)):{},l(n||!e||!e.__esModule?r(i,"default",{value:e,enumerable:!0}):i,e)),x=e=>l(r({},"__esModule",{value:!0}),e);var E={};f(E,{activate:()=>y});module.exports=x(E);var t=b(require("vscode"));function y(e){let n=t.commands.registerCommand("tategaki.openVerticalEditor",()=>{let i=t.window.activeTextEditor;if(!i||i.document.languageId!=="plaintext"){t.window.showErrorMessage("This extension only works with .txt files");return}let s=i.document,o=s.getText(),a=t.window.createWebviewPanel("verticalEditor",`\u7E26\u66F8\u304D: ${s.fileName}`,t.ViewColumn.Beside,{enableScripts:!0,retainContextWhenHidden:!0});function v(){a.webview.html=C(o)}v(),a.onDidDispose(()=>{c()},null,e.subscriptions);async function c(){try{let d=new t.WorkspaceEdit;d.replace(s.uri,new t.Range(0,0,s.lineCount,0),o),await t.workspace.applyEdit(d)?(await s.save(),t.window.showInformationMessage("Document saved successfully.")):t.window.showErrorMessage("Failed to apply edit.")}catch(d){t.window.showErrorMessage(`Failed to save document: ${d.message}`)}}a.webview.onDidReceiveMessage(d=>{switch(d.command){case"save":o=p(d.text),c();break;case"update":o=p(d.text);break}},void 0,e.subscriptions)});e.subscriptions.push(n)}function C(e){return`
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>\u7E26\u66F8\u304D\u30A8\u30C7\u30A3\u30BF</title>
+        <style>
+            body { 
+                font-family: "MS Mincho", "\uFF2D\uFF33 \u660E\u671D", serif;
+                margin: 0;
+                padding: 0;
+                height: 100vh;
+                overflow: hidden;
             }
-        });
-        panel.onDidDispose(() => {
-            saveSubscription.dispose();
-            // Automatically save content when closing
-            const edit = new vscode.WorkspaceEdit();
-            edit.replace(document.uri, new vscode.Range(0, 0, document.lineCount, 0), currentContent);
-            vscode.workspace.applyEdit(edit).then(() => {
-                document.save();
-            });
-        });
-        panel.webview.onDidReceiveMessage(message => {
-            if (message.command === 'save') {
-                currentContent = message.text;
-                const edit = new vscode.WorkspaceEdit();
-                edit.replace(document.uri, new vscode.Range(0, 0, document.lineCount, 0), currentContent);
-                vscode.workspace.applyEdit(edit).then(() => {
-                    document.save();
-                });
+            #editor { 
+                white-space: pre-wrap; 
+                writing-mode: vertical-rl;
+                text-orientation: upright;
+                height: 100vh;
+                width: 100%;
+                overflow-x: auto;
+                padding: 10px;
+                box-sizing: border-box;
+                font-size: 16px;
             }
-            else if (message.command === 'update') {
-                currentContent = message.text;
+            .line {
+                border-right: 1px dotted rgba(170, 170, 170, 0.3);
+                padding-right: 5px;
+                padding-left: 5px;
+                min-width: 1em;
+                height: 100%;
             }
-        }, undefined, context.subscriptions);
-    });
-    context.subscriptions.push(disposable);
-}
-exports.activate = activate;
-function getWebviewContent(text) {
-    return `
-        <!DOCTYPE html>
-        <html lang="ja">
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                body { margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-                #editor-container {
-                    flex: 1;
-                    overflow: auto;
-                    display: flex;
-                    flex-direction: row-reverse;
-                }
-                #editor {
-                    writing-mode: vertical-rl;
-                    text-orientation: upright;
-                    white-space: pre-wrap;
-                    font-family: 'MS Mincho', serif;
-                    font-size: 16px;
-                    line-height: 1.5;
-                    padding: 10px;
-                    box-sizing: border-box;
-                }
-            </style>
-        </head>
-        <body>
-            <div id="editor-container">
-                <div id="editor" contenteditable="true">${text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
-            </div>
-            <script>
-                const vscode = acquireVsCodeApi();
-                const editor = document.getElementById('editor');
+        </style>
+    </head>
+    <body>
+        <div id="editor" contenteditable="true" spellcheck="false">${e.split(`
+`).map(i=>`<div class="line">${i}</div>`).join("")}</div>
+        <script>
+            const vscode = acquireVsCodeApi();
+            const editor = document.getElementById('editor');
+            let lastContent = editor.innerHTML;
 
-                // Listen for Cmd+S or Ctrl+S to save
-                document.addEventListener('keydown', (e) => {
-                    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-                        e.preventDefault(); // Prevent the default save action
-                        vscode.postMessage({
-                            command: 'save',
-                            text: editor.innerText
-                        });
-                    }
-                });
-
-                // Notify the extension when the content is modified
-                editor.addEventListener('input', () => {
+            function updateContent() {
+                const content = editor.innerHTML;
+                if (content !== lastContent) {
+                    lastContent = content;
                     vscode.postMessage({
                         command: 'update',
-                        text: editor.innerText
+                        text: content
                     });
-                });
-            </script>
-        </body>
-        </html>
-    `;
-}
-function deactivate() { }
-exports.deactivate = deactivate;
-//# sourceMappingURL=extension.js.map
+                }
+            }
+
+            editor.addEventListener('input', updateContent);
+            editor.addEventListener('keyup', updateContent);
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    vscode.postMessage({ command: 'save', text: editor.innerHTML });
+                }
+            });
+
+            editor.focus();
+        </script>
+    </body>
+    </html>
+    `}function p(e){return e.replace(/<div class="line">(.*?)<\/div>/g,`$1
+`).replace(/<br\s*\/?>/g,"").replace(/&nbsp;/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/\n$/,"")}0&&(module.exports={activate});
